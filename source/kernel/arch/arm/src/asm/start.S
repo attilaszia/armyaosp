@@ -1,4 +1,4 @@
-/*
+/
 * Entry point of the kernel.
 *
 * The VideoCore GPU has loaded our binary at 0x8000, so now we have to set up
