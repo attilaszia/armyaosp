@@ -162,6 +162,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <output>objs/kernel</output>
             <linkerscript>arch/arm/kernel.ld</linkerscript>
         </ld>
+
+       <echo></echo>
+       <echo>Creating kernel image file</echo>
+       <echo></echo>
+       
+       <exec executable="arm-none-eabi-objcopy">
+           <arg>objs/kernel</arg>
+           <arg>-O</arg>
+           <arg>binary</arg>
+           <arg>./kernel.img</arg>
+       </exec>    
+
     </target>
 
     <target name="install">

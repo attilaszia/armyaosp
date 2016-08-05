@@ -28,38 +28,54 @@
 static uint8_t screen_color = 7;
 static uint16_t* video_memory;
 
+static uint8_t console_buffer[2000];
+uint8_t* cursor = console_buffer;
+
+static void render_screen( int x, int y ) {
+     int i, j, index;
+
+     for ( i = 0; i < 25; i++ ) {
+         for ( j= 0; j < 80; j++) {
+             index = i * 80 + j;
+             draw_character( console_buffer[index], j*8 , i*16 );
+         }
+     }    
+}
+
 static void screen_move_cursor( console_t* console ) {
     uint32_t tmp = ( console->y * console->width ) + console->x;
-
+    cursor = ( uint8_t* )( console_buffer + tmp );    
 }
 
 static void screen_clear( console_t* console ) {
     /* Fill the video memory with spaces */
-
- 
-
+    int i;
+     
+    for ( i = 0; i < 2000; i++ ) {
+        console_buffer[i] = ' ';
+    }
     /* Set the cursor position to the top-left corner of the screen */
-
+    console->x = 0;
+    console->y = 0;
 
     /* Move the cursor to the specified position */
+    screen_move_cursor( console );
 
-   
+    render_screen( 0, 0 );   
 }
 
 static void screen_putchar( console_t* console, char c ) {
-    uint16_t* p = video_memory;
-
     /* Get the position in the video memory according
        to the X and Y positions of the cursor */
-
-   
+    
+    screen_move_cursor( console ); 
 
     /* Handle the printed character */
 
     switch ( c ) {
         case '\r' :
             console->x = 0;
-
+            
             break;
 
         case '\n' :
@@ -81,7 +97,7 @@ static void screen_putchar( console_t* console, char c ) {
             break;
 
         default :
-            *p++ = ( screen_color << 8 ) | c;
+            *cursor++ = c;
             console->x++;
 
             break;
@@ -89,25 +105,19 @@ static void screen_putchar( console_t* console, char c ) {
 
     /* Check if we reached the end of the line */
 
-
-
-    /* Check if we filled the last line of the screen */
-
-    if ( console->y == console->height ) {
+    if ( console->y == console->height) {
         console->y--;
-
-        /* Scroll the lines up */
-
-       
-
-        /* Empty the last line of the screen */
-
-    
+        memmove( console_buffer, 
+                 console_buffer + console->width,
+                 console->width * ( console->height - 1 ) );
+        cursor = ( uint8_t* ) ( console_buffer + console->width * ( console->height - 1 ) );
+        memsetw( cursor, ' ', console->width );       
     }
 
     /* Move the cursor to the modified position */
-
-  
+    screen_move_cursor( console );
+ 
+    render_screen( 0, 0 ); 
 }
 
 static void screen_gotoxy( console_t* console, int x, int y ) {
@@ -122,10 +132,15 @@ static void screen_gotoxy( console_t* console, int x, int y ) {
     }
 
     /* Set the new cursor positions */
-
-
+    
+    console->x = x;
+    console->y = y;
+    
     /* ... and move the cursor */
 
+    screen_move_cursor( console );
+
+    render_screen( 0, 0 );
 }
 
 static void screen_set_fg_color( console_t* console, console_color_t fg ) {
@@ -155,12 +170,11 @@ static console_t screen = {
 };
 
 static void debug_init( console_t* debug ) {
-    
+    /* Revisit this when UART driver is ok */    
 }
 
 static void debug_putchar( console_t* debug, char c ) {
-
-    outb( c, 0x3F8 );
+    /* Revisit this when UART driver is ok */
 }
 
 static console_operations_t debug_ops = {
@@ -184,7 +198,19 @@ static console_t debug = {
 int init_screen( void ) {
     int error;
     bool enable_debug;
+    
+    /* Initialize framebuffer */
+ 
+    if ( init_framebuffer( 1024, 768, 16 ) != 0 ) {
+        set_gpio_function(16,1);
+        set_gpio(16,0);
+        /* die here */
+    }
+    
+    /* Setup the address of the framebuffer */
 
+    set_graphics_address();
+ 
     screen_clear( &screen );
     console_set_screen( &screen );
 
