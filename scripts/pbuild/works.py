@@ -196,7 +196,7 @@ class LdWork( Work ) :
 
         # Build the command
 
-        command = [ "../../toolchain/binutils-2.19/ld/ld-new" ]
+        command = [ "arm-none-eabi-ld" ]
 
         if self.linker_script != None :
             command += [ "-T" + self.linker_script ]
