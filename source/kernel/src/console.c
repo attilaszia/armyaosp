@@ -1,5 +1,6 @@
 /* Console handling functions
  *
+ * Copyright (c) 2016 Attila Szasz
  * Copyright (c) 2008, 2009 Zoltan Kovacs
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,7 +24,7 @@
 #include <lib/stdarg.h>
 #include <lib/printf.h>
 
-#include <arch/spinlock.h>
+//#include <arch/spinlock.h>
 
 #define KERNEL_CONSOLE_SIZE 32768
 
@@ -35,7 +36,7 @@ static char kernel_console[ KERNEL_CONSOLE_SIZE ];
 static console_t* screen = NULL;
 static console_t* debug = NULL;
 static console_t* real_screen = NULL;
-static spinlock_t console_lock = INIT_SPINLOCK( "console" );
+//static spinlock_t console_lock = INIT_SPINLOCK( "console" );
 
 console_t* console_get_real_screen( void ) {
     return real_screen;
@@ -46,7 +47,7 @@ int console_set_screen( console_t* console ) {
         console->ops->init( console );
     }
 
-    spinlock_disable( &console_lock );
+  //  spinlock_disable( &console_lock );
 
     screen = console;
 
@@ -54,7 +55,7 @@ int console_set_screen( console_t* console ) {
         real_screen = console;
     }
 
-    spinunlock_enable( &console_lock );
+ //   spinunlock_enable( &console_lock );
 
     return 0;
 }
@@ -65,12 +66,12 @@ int console_switch_screen( console_t* new_console, console_t** old_console ) {
         new_console->ops->init( new_console );
     }
 
-    spinlock_disable( &console_lock );
+ //   spinlock_disable( &console_lock );
 
     *old_console = screen;
     screen = new_console;
 
-    spinunlock_enable( &console_lock );
+ //   spinunlock_enable( &console_lock );
 
     return 0;
 }
@@ -80,11 +81,11 @@ int console_set_debug( console_t* console ) {
         console->ops->init( console );
     }
 
-    spinlock_disable( &console_lock );
+ //   spinlock_disable( &console_lock );
 
     debug = console;
 
-    spinunlock_enable( &console_lock );
+ //   spinunlock_enable( &console_lock );
 
     return 0;
 }
@@ -116,7 +117,7 @@ static int kprintf_helper( void* data, char c ) {
 int kprintf( int loglevel, const char* format, ... ) {
     va_list args;
 
-    spinlock_disable( &console_lock );
+   // spinlock_disable( &console_lock );
 
     /* Print the text */
 
@@ -137,13 +138,13 @@ int kprintf( int loglevel, const char* format, ... ) {
         debug->ops->flush( debug );
     }
 
-    spinunlock_enable( &console_lock );
+   // spinunlock_enable( &console_lock );
 
     return 0;
 }
 
 int kvprintf( int loglevel, const char* format, va_list args ) {
-    spinlock_disable( &console_lock );
+   // spinlock_disable( &console_lock );
 
     /* Print the text */
 
@@ -159,7 +160,7 @@ int kvprintf( int loglevel, const char* format, va_list args ) {
         debug->ops->flush( debug );
     }
 
-    spinunlock_enable( &console_lock );
+  //  spinunlock_enable( &console_lock );
 
     return 0;
 }
@@ -176,7 +177,7 @@ int dprintf( const char* format, ... ) {
 #ifndef MK_RELEASE_BUILD
     va_list args;
 
-    spinlock_disable( &console_lock );
+//    spinlock_disable( &console_lock );
 
     /* Print the text */
 
@@ -191,7 +192,7 @@ int dprintf( const char* format, ... ) {
         debug->ops->flush( debug );
     }
 
-    spinunlock_enable( &console_lock );
+//    spinunlock_enable( &console_lock );
 #endif /* !MK_RELEASE_BUILD */
 
     return 0;
@@ -221,7 +222,7 @@ int kernel_console_read( char* buffer, int size ) {
     int ret;
     int to_read;
 
-    spinlock_disable( &console_lock );
+ //   spinlock_disable( &console_lock );
 
     to_read = MIN( kernel_console_size, size );
     ret = to_read;
@@ -234,7 +235,7 @@ int kernel_console_read( char* buffer, int size ) {
         to_read--;
     }
 
-    spinunlock_enable( &console_lock );
+//    spinunlock_enable( &console_lock );
 
     return ret;
 }

@@ -1,7 +1,7 @@
-/* Common macro definitions
+/* printf() like function for the kernel
  *
- * Copyright (c) 2016 Attila Szasz
- * Copyright (c) 2008, 2009 Zoltan Kovacs
+ * Copyright (c) 2008 Zoltan Kovacs, Kornel Csernai
+ * Copyright (c) 2009 Kornel Csernai
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License
@@ -17,29 +17,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef _MACROS_H_
-#define _MACROS_H_
-/*
-#include <kernel.h>
-#include <config.h>
-*/
-#define MIN(a,b) ((a)<(b)?(a):(b))
-#define MAX(a,b) ((a)<(b)?(b):(a))
+#ifndef _PRINTF_H_
+#define _PRINTF_H_
 
-#define ALIGN(n,a) (((n)+(a)-1)/(a)*(a))
+#define PRINTF_LEFT     0x01
+#define PRINTF_CAPITAL  0x02
+#define PRINTF_SIGNED   0x04
+#define PRINTF_LONG     0x08
+#define PRINTF_SHORT    0x10
+#define PRINTF_NEEDSIGN 0x20
+#define PRINTF_LZERO    0x40
+#define PRINTF_NEEDPLUS 0x80
+#define PRINTF_LONGLONG 0x100
+#define PRINTF_PRECIS   0x200
 
-#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
+#define PRINTF_BUFLEN   32
 
-#define ROUND_UP(n,a) (((n)+(a)-1) & ~((a)-1))
-#define ROUND_DOWN(n,a) ((n) & ~((a)-1))
+#include <lib/stdarg.h>
 
-#if __GNUC__ < 3
-#define __expect(foo,bar) (foo)
-#else
-#define __expect(foo,bar) __builtin_expect((long)(foo),bar)
-#endif
+typedef int printf_helper_t( void* data, char c );
 
-#define __likely(foo) __expect((foo),1)
-#define __unlikely(foo) __expect((foo),0)
+int do_printf( printf_helper_t* helper, void* data, const char* format, va_list args );
 
-#endif /* _MACROS_H_ */
+#endif // _PRINTF_H_

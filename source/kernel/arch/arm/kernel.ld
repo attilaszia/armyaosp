@@ -22,15 +22,15 @@ SECTIONS {
                 *(.rodata)
         }
 
-        . = ALIGN(64)
+    . = ALIGN(64);
 
-        _bss = . ;
-        .bss : {
+    _bss = . ;
+    .bss : {
                *(.bss)
-        }
+    }
 
-        . = ALIGN(64)
-        _end = .;
+    . = ALIGN(64);
+    _end = .;
 
 	/*
 	* Discard other stuff. This might be risky, we should permit

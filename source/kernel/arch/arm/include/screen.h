@@ -1,7 +1,6 @@
-/* Common macro definitions
+/* Basic screen output handling functions
  *
- * Copyright (c) 2016 Attila Szasz
- * Copyright (c) 2008, 2009 Zoltan Kovacs
+ * Copyright (c) 2008 Zoltan Kovacs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License
@@ -17,29 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef _MACROS_H_
-#define _MACROS_H_
-/*
-#include <kernel.h>
-#include <config.h>
-*/
-#define MIN(a,b) ((a)<(b)?(a):(b))
-#define MAX(a,b) ((a)<(b)?(b):(a))
+#ifndef _ARCH_SCREEN_H_
+#define _ARCH_SCREEN_H_
 
-#define ALIGN(n,a) (((n)+(a)-1)/(a)*(a))
+#define SCREEN_WIDTH 80
+#define SCREEN_HEIGHT 25
 
-#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
+int init_screen( void );
 
-#define ROUND_UP(n,a) (((n)+(a)-1) & ~((a)-1))
-#define ROUND_DOWN(n,a) ((n) & ~((a)-1))
-
-#if __GNUC__ < 3
-#define __expect(foo,bar) (foo)
-#else
-#define __expect(foo,bar) __builtin_expect((long)(foo),bar)
-#endif
-
-#define __likely(foo) __expect((foo),1)
-#define __unlikely(foo) __expect((foo),0)
-
-#endif /* _MACROS_H_ */
+#endif // _ARCH_SCREEN_H_

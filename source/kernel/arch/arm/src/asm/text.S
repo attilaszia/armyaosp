@@ -51,7 +51,7 @@ unsigned_string:
 
 	charLoop$:
 		mov r1,base
-		bl DivideU32
+		bl divide_u32
 		cmp r1,#9
 		addls r1,#'0'
 		addhi r1,#'a'-10

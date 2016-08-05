@@ -21,11 +21,9 @@
 
 #include <types.h>
 #include <console.h>
-#include <kernel.h>
 #include <lib/string.h>
 
 #include <arch/screen.h>
-#include <arch/io.h>
 
 static uint8_t screen_color = 7;
 static uint16_t* video_memory;
