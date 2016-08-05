@@ -5,8 +5,8 @@
 *
 */
 
-const char* build_date == __DATE__;
-const char* build_time == __TIME__;
+const char* build_date = __DATE__;
+const char* build_time = __TIME__;
 
 void arch_start() {
     /* Initialize screen */

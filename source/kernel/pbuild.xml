@@ -1,0 +1,177 @@
+<!--
+
+This file is part of the yaosp build system
+
+Copyright (c) 2016 Attila Szasz
+Copyright (c) 2008, 2009 Zoltan Kovacs
+Copyright (c) 2009 Kornel Csernai
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+-->
+
+<build default="all">
+    <array name="arch_files_asm">
+        <item>arch/arm/src/asm/start.S</item>
+        <item>arch/arm/src/asm/drawing.S</item>
+        <item>arch/arm/src/asm/frame_buffer.S</item>
+        <item>arch/arm/src/asm/gpio.S</item>
+        <item>arch/arm/src/asm/mailbox.S</item>
+        <item>arch/arm/src/asm/maths.S</item>
+        <item>arch/arm/src/asm/random.S</item>
+        <item>arch/arm/src/asm/system_timer.S</item>
+        <item>arch/arm/src/asm/tags.S</item>
+        <item>arch/arm/src/asm/text.S</item>
+    </array>
+
+    <array name="arch_files_c">
+        <item>arch/arm/src/start.c</item>
+        <item>arch/arm/src/screen.c</item>
+    </array>
+
+
+    <array name="files">
+        <item>src/console.c</item>    
+    </array>
+
+    <array name="files_lib">
+        <item>src/lib/printf.c</item>
+    </array>
+
+    <target name="clean">
+        <delete>objs/x86emu/*</delete>
+        <rmdir>objs/x86emu</rmdir>
+        <delete>objs/arch/*</delete>
+        <rmdir>objs/arch</rmdir>
+        <delete>objs/lib/*</delete>
+        <rmdir>objs/lib</rmdir>
+        <delete>objs/lock/*</delete>
+        <rmdir>objs/lock</rmdir>
+        <delete>objs/*</delete>
+        <rmdir>objs</rmdir>
+        <delete>include/arch</delete>
+    </target>
+
+    <target name="prepare" type="private">
+        <mkdir>objs</mkdir>
+        <mkdir>objs/lib</mkdir>
+        <mkdir>objs/arch</mkdir>
+        <symlink from="../arch/arm/include" to="include/arch"/>
+    </target>
+
+    <target name="compile">
+        <call target="prepare"/>
+
+        <echo>Compiling architecture specific assembly files</echo>
+        <echo/>
+        # -mcpu=arm1176jzf-s -fpic -ffreestanding -c boot.S
+        <for var="i" array="${arch_files_asm}">
+            <echo>[GCC    ] source/kernel/${i}</echo>
+            <gcc>
+                <input>${i}</input>
+                <output>objs/arch/filename(${i}).o</output>
+                <include>./include</include>
+                <define key="__ASSEMBLER__"/>
+                <flag>-c</flag>
+                <flag>-mcpu=arm1176jzf-s</flag>
+                <flag>-fpic</flag>
+                <flag>-nostdinc</flag>
+                <flag>-nostdlib</flag>
+                <flag>-ffreestanding</flag>
+            </gcc>
+        </for>
+
+        <echo/>
+        <echo>Compiling architecture specific C files</echo>
+        <echo/>
+
+        <for var="i" array="${arch_files_c}">
+            <echo>[GCC    ] source/kernel/${i}</echo>
+            <gcc>
+                <input>${i}</input>
+                <output>objs/arch/filename(${i}).o</output>
+                <include>./include</include>
+                <flag>-c</flag>
+                <flag>-O2</flag>
+                <flag>-c</flag>
+                <flag>-mcpu=arm1176jzf-s</flag>
+                <flag>-fpic</flag>
+                <flag>-nostdinc</flag>
+                <flag>-nostdlib</flag>
+                <flag>-ffreestanding</flag>
+            </gcc>
+        </for>
+
+        <echo/>
+        <echo>Compiling architecture independent files</echo>
+        <echo/>
+
+        <for var="i" array="${files}">
+            <echo>[GCC    ] source/kernel/${i}</echo>
+            <gcc>
+                <input>${i}</input>
+                <output>objs/filename(${i}).o</output>
+                <include>./include</include>
+                <flag>-c</flag>
+                <flag>-O2</flag>
+                <flag>-c</flag>
+                <flag>-mcpu=arm1176jzf-s</flag>
+                <flag>-fpic</flag>
+                <flag>-nostdinc</flag>
+                <flag>-nostdlib</flag>
+                <flag>-ffreestanding</flag>
+            </gcc>
+        </for>
+
+        <for var="i" array="${files_lib}">
+            <echo>[GCC    ] source/kernel/${i}</echo>
+            <gcc>
+                <input>${i}</input>
+                <output>objs/lib/filename(${i}).o</output>
+                <include>./include</include>
+                <flag>-c</flag>
+                <flag>-O2</flag>
+                <flag>-c</flag>
+                <flag>-mcpu=arm1176jzf-s</flag>
+                <flag>-fpic</flag>
+                <flag>-nostdinc</flag>
+                <flag>-nostdlib</flag>
+                <flag>-ffreestanding</flag>
+            </gcc>
+        </for>
+
+        <echo></echo>
+        <echo>Linking kernel binary</echo>
+        <echo></echo>
+        <echo>[LD    ] source/kernel/objs/kernel</echo>
+
+        <ld>
+            <input>objs/*.o</input>
+            <input>objs/lib/*.o</input>
+            <input>objs/arch/*.o</input>
+            <output>objs/kernel</output>
+            <linkerscript>arch/arm/kernel.ld</linkerscript>
+        </ld>
+    </target>
+
+    <target name="install">
+        <copy from="objs/kernel" to="../../build/image/system/kernel"/>
+    </target>
+
+    <target name="all">
+        <call target="clean"/>
+        <call target="compile"/>
+        <!--call target="test" directory="tst"/-->
+    </target>
+</build>

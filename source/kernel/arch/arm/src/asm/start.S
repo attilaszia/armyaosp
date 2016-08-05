@@ -1,5 +1,4 @@
-/
-* Entry point of the kernel.
+/* Entry point of the kernel.
 *
 * The VideoCore GPU has loaded our binary at 0x8000, so now we have to set up
 * the exception vector for the core, then we set up an environment for C code
