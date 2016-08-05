@@ -23,7 +23,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 <build default="all">
     <array name="arch_files_asm">
-        <item>arch/arm/src/asm/start.S</item>
+        <item>arch/arm/src/asm/entry.S</item>
+        <item>arch/arm/src/asm/irq_handler.S</item>
+        <item>arch/arm/src/asm/memory_barrier.S</item>
         <item>arch/arm/src/asm/drawing.S</item>
         <item>arch/arm/src/asm/frame_buffer.S</item>
         <item>arch/arm/src/asm/gpio.S</item>
