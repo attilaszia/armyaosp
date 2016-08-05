@@ -47,6 +47,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
     <array name="files_lib">
         <item>src/lib/printf.c</item>
+        <item>src/lib/string.c</item>
     </array>
 
     <target name="clean">
@@ -85,7 +86,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                 <define key="__ASSEMBLER__"/>
                 <flag>-c</flag>
                 <flag>-mcpu=arm1176jzf-s</flag>
-                <flag>-fpic</flag>
                 <flag>-nostdinc</flag>
                 <flag>-nostdlib</flag>
                 <flag>-ffreestanding</flag>
@@ -106,7 +106,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                 <flag>-O2</flag>
                 <flag>-c</flag>
                 <flag>-mcpu=arm1176jzf-s</flag>
-                <flag>-fpic</flag>
                 <flag>-nostdinc</flag>
                 <flag>-nostdlib</flag>
                 <flag>-ffreestanding</flag>
@@ -127,7 +126,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                 <flag>-O2</flag>
                 <flag>-c</flag>
                 <flag>-mcpu=arm1176jzf-s</flag>
-                <flag>-fpic</flag>
                 <flag>-nostdinc</flag>
                 <flag>-nostdlib</flag>
                 <flag>-ffreestanding</flag>
@@ -144,7 +142,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                 <flag>-O2</flag>
                 <flag>-c</flag>
                 <flag>-mcpu=arm1176jzf-s</flag>
-                <flag>-fpic</flag>
                 <flag>-nostdinc</flag>
                 <flag>-nostdlib</flag>
                 <flag>-ffreestanding</flag>

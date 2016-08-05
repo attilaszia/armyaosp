@@ -15,18 +15,18 @@ SECTIONS {
 	}
 	
 	.data : {
-		*(.data)
+		*(.data .data.*)
 	}
         
-        .rodata : {
-                *(.rodata)
-        }
+    .rodata : {
+        *(.rodata .rodata.*)
+    }
 
     . = ALIGN(64);
 
     _bss = . ;
     .bss : {
-               *(.bss)
+        *(.bss)
     }
 
     . = ALIGN(64);
