@@ -83,6 +83,19 @@ typedef struct console {
     console_operations_t* ops;
 } console_t;
 
+typedef struct framebuffer_info {
+    uint32_t width;
+    uint32_t height;
+    uint32_t v_width;
+    uint32_t v_height;
+    uint32_t pitch;
+    uint32_t bitdepth;
+    uint32_t x;
+    uint32_t y;
+    void* pointer;
+    uint32_t size;
+} framebuffer_info_t;
+
 console_t* console_get_real_screen( void );
 
 /**

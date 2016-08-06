@@ -105,8 +105,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                 <output>objs/arch/filename(${i}).o</output>
                 <include>./include</include>
                 <flag>-c</flag>
-                <flag>-O2</flag>
-                <flag>-c</flag>
                 <flag>-mcpu=arm1176jzf-s</flag>
                 <flag>-nostdinc</flag>
                 <flag>-nostdlib</flag>
@@ -125,8 +123,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                 <output>objs/filename(${i}).o</output>
                 <include>./include</include>
                 <flag>-c</flag>
-                <flag>-O2</flag>
-                <flag>-c</flag>
                 <flag>-mcpu=arm1176jzf-s</flag>
                 <flag>-nostdinc</flag>
                 <flag>-nostdlib</flag>
@@ -140,8 +136,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                 <input>${i}</input>
                 <output>objs/lib/filename(${i}).o</output>
                 <include>./include</include>
-                <flag>-c</flag>
-                <flag>-O2</flag>
                 <flag>-c</flag>
                 <flag>-mcpu=arm1176jzf-s</flag>
                 <flag>-nostdinc</flag>

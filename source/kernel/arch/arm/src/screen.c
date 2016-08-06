@@ -28,18 +28,18 @@
 static uint8_t screen_color = 7;
 static uint16_t* video_memory;
 
-static uint8_t console_buffer[2000];
+static char console_buffer[2000];
 uint8_t* cursor = console_buffer;
 
 static void render_screen( int x, int y ) {
      int i, j, index;
-
+     
      for ( i = 0; i < 25; i++ ) {
          for ( j= 0; j < 80; j++) {
              index = i * 80 + j;
-             draw_character( console_buffer[index], j*8 , i*16 );
+             draw_character( console_buffer[index] , j*8 + x , i*16 + y );
          }
-     }    
+     }
 }
 
 static void screen_move_cursor( console_t* console ) {
@@ -50,17 +50,15 @@ static void screen_move_cursor( console_t* console ) {
 static void screen_clear( console_t* console ) {
     /* Fill the video memory with spaces */
     int i;
-     
     for ( i = 0; i < 2000; i++ ) {
         console_buffer[i] = ' ';
-    }
+    } 
     /* Set the cursor position to the top-left corner of the screen */
     console->x = 0;
     console->y = 0;
 
     /* Move the cursor to the specified position */
     screen_move_cursor( console );
-
     render_screen( 0, 0 );   
 }
 
@@ -111,7 +109,7 @@ static void screen_putchar( console_t* console, char c ) {
                  console_buffer + console->width,
                  console->width * ( console->height - 1 ) );
         cursor = ( uint8_t* ) ( console_buffer + console->width * ( console->height - 1 ) );
-        memsetw( cursor, ' ', console->width );       
+        memset( cursor, ' ', console->width );       
     }
 
     /* Move the cursor to the modified position */
@@ -198,19 +196,15 @@ static console_t debug = {
 int init_screen( void ) {
     int error;
     bool enable_debug;
-    
+    framebuffer_info_t* fb;    
+
     /* Initialize framebuffer */
  
-    if ( init_framebuffer( 1024, 768, 16 ) != 0 ) {
-        set_gpio_function(16,1);
-        set_gpio(16,0);
-        /* die here */
-    }
+    fb = ( framebuffer_info_t* ) init_framebuffer( 1024, 768, 16 );
     
     /* Setup the address of the framebuffer */
 
-    set_graphics_address();
- 
+    set_graphics_address( fb );
     screen_clear( &screen );
     console_set_screen( &screen );
 
