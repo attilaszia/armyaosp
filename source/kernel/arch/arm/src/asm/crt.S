@@ -23,6 +23,11 @@
 	.text
 	.thumb
 
+.globl halt
+halt:
+halt0$:
+    b halt0$
+
 
 @ int __aeabi_idiv0(int r)
 @

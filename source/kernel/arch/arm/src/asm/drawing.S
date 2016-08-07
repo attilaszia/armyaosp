@@ -1,9 +1,9 @@
-/* Written by Alex Chadwick. 
+/* Drawing shapes to the screen
 *
-*  This code is part of the Baking Pie tutorials' example implementation. For now
-*  the only change I made was to rename the functions with C style casing.
+*  Copyright (c) 2016 Attila Szasz
+*  Copyright (c) Alex Chadwick
 *
-*  drawing.s contains code to do with drawing shapes to the screen.
+*  Most of it written by Alex Chadwick, I altered the drawpixel method somewhat
 */
 
 /*
@@ -13,8 +13,10 @@
 .section .data
 .align 1
 foreColour:
-	.hword 0xFFFF
+	.hword 0xffff
 
+bgColor:
+        .hword 0x0000
 /*
 * graphicsAddress stores the address of the frame buffer info structure. 
 * C++ Signature: FrameBuferDescription* graphicsAddress;
@@ -59,14 +61,17 @@ set_graphics_address:
 	
 /*
 * draw_pixel draws a single pixel to the screen at the point in (r0,r1).
-* C++ Signature: void draw_pixel(u32x2 point);
+* C++ Signature: void draw_pixel(u32x2 point, int fill);
 */
 .globl draw_pixel
 draw_pixel:
 	px .req r0
 	py .req r1
-	
-	addr .req r2
+        fill .req r2
+
+        push {r4-r12}
+
+	addr .req r11
 	ldr addr,=graphicsAddress
 	ldr addr,[addr]
 	
@@ -95,9 +100,21 @@ draw_pixel:
 	ldr fore,=foreColour
 	ldrh fore,[fore]
 	
+        cmp fill,#1
+        beq filled$
+        bg .req r12     
+        ldr bg, =bgColor
+        ldrh bg, [bg] 
+        strh bg, [addr]
+        b end$
+        filled$:
 	strh fore,[addr]
+        end$:
+        .unreq bg
 	.unreq fore
 	.unreq addr
+        .unreq fill
+        pop {r4-r12}
 	mov pc,lr
 
 /*
@@ -204,13 +221,20 @@ draw_character:
 			blt charPixelLoopEnd$
 			lsl bits,#1
 			tst bits,#0x100
-			beq charPixelLoop$
+			beq notSet$
 
 			add r0,x,bit
 			mov r1,y
+                        mov r2,#1
 			bl draw_pixel
-
 			b charPixelLoop$
+
+                        notSet$:
+                             add r0,x,bit
+                             mov r1,y
+                             mov r2,#0
+                             bl draw_pixel
+                             b charPixelLoop$
 		charPixelLoopEnd$:
 
 		.unreq bit

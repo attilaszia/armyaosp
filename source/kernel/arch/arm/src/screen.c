@@ -33,7 +33,7 @@ uint8_t* cursor = console_buffer;
 
 static void render_screen( int x, int y ) {
      int i, j, index;
-     
+        
      for ( i = 0; i < 25; i++ ) {
          for ( j= 0; j < 80; j++) {
              index = i * 80 + j;
@@ -46,6 +46,7 @@ static void screen_move_cursor( console_t* console ) {
     uint32_t tmp = ( console->y * console->width ) + console->x;
     cursor = ( uint8_t* )( console_buffer + tmp );    
 }
+
 
 static void screen_clear( console_t* console ) {
     /* Fill the video memory with spaces */
@@ -101,7 +102,7 @@ static void screen_putchar( console_t* console, char c ) {
             break;
     }
 
-    /* Check if we reached the end of the line */
+    /* Check if we reached the end of screen */
 
     if ( console->y == console->height) {
         console->y--;
@@ -109,7 +110,8 @@ static void screen_putchar( console_t* console, char c ) {
                  console_buffer + console->width,
                  console->width * ( console->height - 1 ) );
         cursor = ( uint8_t* ) ( console_buffer + console->width * ( console->height - 1 ) );
-        memset( cursor, ' ', console->width );       
+        memset( cursor, ' ', console->width );
+                   
     }
 
     /* Move the cursor to the modified position */
