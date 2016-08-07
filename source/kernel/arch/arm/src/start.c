@@ -14,13 +14,15 @@ void arch_start() {
     /* Initialize screen */
 
     init_screen();
-
+    int i;
     kprintf(
         INFO,
         "Booting yaOSp 0.0.6-arm built on %s %s.\n",
         build_date,
         build_time
     );
-
+for (i = 1; i<28; i++ ) {
+    kprintf(INFO, "%d\n",i);
+}
     /* Do the real work here */
 }

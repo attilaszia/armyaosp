@@ -35,6 +35,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         <item>arch/arm/src/asm/system_timer.S</item>
         <item>arch/arm/src/asm/tags.S</item>
         <item>arch/arm/src/asm/text.S</item>
+        <item>arch/arm/src/asm/uidivmod.S</item>
+        <item>arch/arm/src/asm/crt.S</item>
     </array>
 
     <array name="arch_files_c">

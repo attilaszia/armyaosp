@@ -142,18 +142,18 @@ PRINTF_DO_NUM:
                         /* Ok, this wont work now until
                              i create some fancy hack. */
 
-                        //do {    
-                            //unsigned long temp;
-                            //temp = (unsigned long)num % radix;
-                            //where--;
-                            //if(temp < 10)
-                            //    *where = temp + '0';
-                            //else if(flags & PRINTF_CAPITAL)
-                            //    *where = temp - 10 + 'A';
-                            //else
-                            //    *where = temp - 10 + 'a';
-                            //num = (unsigned long)num / radix;
-                        //} while(num != 0);
+                        do {    
+                            unsigned long temp;
+                            temp = (unsigned long)num % radix;
+                            where--;
+                            if(temp < 10)
+                                *where = temp + '0';
+                            else if(flags & PRINTF_CAPITAL)
+                                *where = temp - 10 + 'A';
+                            else
+                                *where = temp - 10 + 'a';
+                            num = (unsigned long)num / radix;
+                        } while(num != 0);
                         goto PRINTF_OUT;
                     case 'c':
                         flags &= ~PRINTF_LZERO;
