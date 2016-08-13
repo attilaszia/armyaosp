@@ -21,6 +21,7 @@ bgColor:
 * graphicsAddress stores the address of the frame buffer info structure. 
 * C++ Signature: FrameBuferDescription* graphicsAddress;
 */
+.globl graphicsAddress
 .align 2
 graphicsAddress:
 	.int 0
@@ -164,6 +165,7 @@ draw_line:
 
 		mov r0,x0
 		mov r1,y0
+                mov r2,#1
 		bl draw_pixel
 
 		cmp dyn, err,lsl #1

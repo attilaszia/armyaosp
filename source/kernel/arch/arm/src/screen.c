@@ -27,6 +27,7 @@
 
 static uint8_t screen_color = 7;
 static uint16_t* video_memory;
+extern uint32_t* graphicsAddress;
 
 static char console_buffer[2000];
 uint8_t* cursor = console_buffer;
@@ -42,6 +43,22 @@ static void render_screen( int x, int y ) {
      }
 }
 
+static void clear_fb( void ) {
+    int i, j;
+    for ( i = 0; i < 1024; i++ ) {
+        for ( j = 0; j < 768; j++ ) {
+            draw_pixel( i, j , 0 );
+        }
+    }
+}
+
+static void render_char( int x, int y, console_t* console ) {
+    int i = console->y;
+    int j = console->x;
+    int index = i * 80 + j;
+    draw_character( console_buffer[index] , j*8 + x, i*16 + y );  
+}
+
 static void screen_move_cursor( console_t* console ) {
     uint32_t tmp = ( console->y * console->width ) + console->x;
     cursor = ( uint8_t* )( console_buffer + tmp );    
@@ -51,22 +68,23 @@ static void screen_move_cursor( console_t* console ) {
 static void screen_clear( console_t* console ) {
     /* Fill the video memory with spaces */
     int i;
-    for ( i = 0; i < 2000; i++ ) {
+    /*for ( i = 0; i < 2000; i++ ) {
         console_buffer[i] = ' ';
-    } 
+    } */
     /* Set the cursor position to the top-left corner of the screen */
     console->x = 0;
     console->y = 0;
 
     /* Move the cursor to the specified position */
     screen_move_cursor( console );
-    render_screen( 0, 0 );   
+    clear_fb( );
+    /*render_screen( 0, 0 );*/   
 }
 
 static void screen_putchar( console_t* console, char c ) {
     /* Get the position in the video memory according
        to the X and Y positions of the cursor */
-    
+    timer_wait(10000); 
     screen_move_cursor( console ); 
 
     /* Handle the printed character */
@@ -74,13 +92,11 @@ static void screen_putchar( console_t* console, char c ) {
     switch ( c ) {
         case '\r' :
             console->x = 0;
-            
             break;
 
         case '\n' :
             console->x = 0;
             console->y++;
-
             break;
 
         case '\b' :
@@ -92,11 +108,11 @@ static void screen_putchar( console_t* console, char c ) {
             } else {
                 console->x--;
             }
-
             break;
 
         default :
             *cursor++ = c;
+            render_char( 0, 0, console);
             console->x++;
 
             break;
@@ -111,13 +127,16 @@ static void screen_putchar( console_t* console, char c ) {
                  console->width * ( console->height - 1 ) );
         cursor = ( uint8_t* ) ( console_buffer + console->width * ( console->height - 1 ) );
         memset( cursor, ' ', console->width );
-                   
+        //render_screen( 0, 0 );
+        // memmove( ( uint8_t* )*graphicsAddress, 
+        //         ( uint8_t* )*graphicsAddress + 0x1000,
+        //         0x8000 ); 
+                           
     }
 
     /* Move the cursor to the modified position */
     screen_move_cursor( console );
  
-    render_screen( 0, 0 ); 
 }
 
 static void screen_gotoxy( console_t* console, int x, int y ) {
@@ -203,12 +222,13 @@ int init_screen( void ) {
     /* Initialize framebuffer */
  
     fb = ( framebuffer_info_t* ) init_framebuffer( 1024, 768, 16 );
-    
     /* Setup the address of the framebuffer */
 
     set_graphics_address( fb );
     screen_clear( &screen );
     console_set_screen( &screen );
+
+    kprintf( INFO, "Framebuffer at: %x\n", ( uint32_t )fb->pointer );
 
     return 0;
 }

@@ -26,6 +26,6 @@ for (i = 1; i<28; i++ ) {
     kprintf(INFO, "%d\n",i);
 }
     kprintf( INFO, "Rot in hell" );
-    draw_line( 0, 0, 100, 100);
+    draw_line( 10, 10, 100, 100);
     /* Do the real work here */
 }

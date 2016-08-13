@@ -55,8 +55,10 @@ reset_handler:
     ldmia r1!, {r2-r9}
     stmia r0!, {r2-r9}
 
-    /* Some mangling of the Control Register should happen here, but omitted */
-
+    /* Some mangling of the Control Register to allow unalign mem access */
+    mrc p15, 0, r0, c1, c0, 0
+    orr r0, #1 << 22
+    mcr p15, 0, r0, c1, c0, 0
     /* Clear the .bss section */
     ldr r0, =_bss
     ldr r1, =_end
