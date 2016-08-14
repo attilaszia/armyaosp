@@ -31,13 +31,13 @@ _vectors:
     ldr pc, fiq_addr
 
 reset_addr:    .word reset_handler
-undef_addr:    .word reset_handler
-swi_addr:      .word reset_handler
-prefetch_addr: .word reset_handler
-abort_addr:    .word reset_handler
-reserved_addr: .word reset_handler
+undef_addr:    .word undef_handler
+swi_addr:      .word swi_handler
+prefetch_addr: .word prefetch_handler
+abort_addr:    .word abort_handler
+reserved_addr: .word reserved_handler
 irq_addr:      .word irq_handler
-fiq_addr:      .word reset_handler
+fiq_addr:      .word irq_handler
 
 _endvectors:
 

@@ -57,7 +57,7 @@ irq_handler:
 	bl dmb
 
 	/* Call the C interrupt dispatching code. */
-	//bl dispatch TODO
+	bl dispatch 
 
 	/* Execute a data memory barrier, as per the BCM2835 documentation.  */
 	bl dmb

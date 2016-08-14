@@ -27,7 +27,7 @@
 
 static uint8_t screen_color = 7;
 static uint16_t* video_memory;
-extern uint32_t* graphicsAddress;
+extern framebuffer_info_t* graphicsAddress;
 
 static char console_buffer[2000];
 uint8_t* cursor = console_buffer;
@@ -68,9 +68,6 @@ static void screen_move_cursor( console_t* console ) {
 static void screen_clear( console_t* console ) {
     /* Fill the video memory with spaces */
     int i;
-    /*for ( i = 0; i < 2000; i++ ) {
-        console_buffer[i] = ' ';
-    } */
     /* Set the cursor position to the top-left corner of the screen */
     console->x = 0;
     console->y = 0;
@@ -78,13 +75,11 @@ static void screen_clear( console_t* console ) {
     /* Move the cursor to the specified position */
     screen_move_cursor( console );
     clear_fb( );
-    /*render_screen( 0, 0 );*/   
 }
 
 static void screen_putchar( console_t* console, char c ) {
     /* Get the position in the video memory according
        to the X and Y positions of the cursor */
-    timer_wait(10000); 
     screen_move_cursor( console ); 
 
     /* Handle the printed character */
@@ -127,10 +122,8 @@ static void screen_putchar( console_t* console, char c ) {
                  console->width * ( console->height - 1 ) );
         cursor = ( uint8_t* ) ( console_buffer + console->width * ( console->height - 1 ) );
         memset( cursor, ' ', console->width );
-        //render_screen( 0, 0 );
-        // memmove( ( uint8_t* )*graphicsAddress, 
-        //         ( uint8_t* )*graphicsAddress + 0x1000,
-        //         0x8000 ); 
+        render_screen( 0, 0 );
+        
                            
     }
 
