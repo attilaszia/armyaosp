@@ -23,4 +23,5 @@ void arch_start() {
         build_time
     );
     /* Do the real work here */
+    enable();
 }
