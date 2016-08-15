@@ -23,5 +23,10 @@ void arch_start() {
         build_time
     );
     /* Do the real work here */
+
+    kprintf( INFO, "Enabling timer interrupt.\n" );
+    enable_irq( 64 );
+    init_timer();
     enable();
+    kprintf( INFO, "Success\n" );
 }

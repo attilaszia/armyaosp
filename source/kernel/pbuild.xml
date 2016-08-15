@@ -45,6 +45,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         <item>arch/arm/src/screen.c</item>
         <item>arch/arm/src/dispatch.c</item>
         <item>arch/arm/src/exception.c</item>
+        <item>arch/arm/src/timer.c</item>
     </array>
 
 

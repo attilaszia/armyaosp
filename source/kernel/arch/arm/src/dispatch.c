@@ -146,6 +146,8 @@ void dispatch(void)
  */
 void enable_irq(irqmask irq_num)
 {
+    /* Ok this is ugly */
+    regs->Enable_Basic_IRQs = 1 << 0;   
     if (irq_num < 32)
     {
         regs->Enable_IRQs_1 = 1 << irq_num;
